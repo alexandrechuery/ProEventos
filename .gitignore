@@ -495,3 +495,9 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+
+*.db
+*.db-wal
+*.db-shm
+Back/src/ProEventos.API/ProEventos.db

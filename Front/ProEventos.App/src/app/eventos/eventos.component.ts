@@ -8,40 +8,54 @@ import { Component } from '@angular/core';
 })
 export class EventosComponent {
 
-  constructor(private http: HttpClient){
-
-  }
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void{
     this.getEventos();
   }
 
-  public eventos: any;
+  public eventos: any = [];
+  public eventosFiltrados: any = [];
+
+  larguraImagem: number = 150;
+  margemImagem: number = 2;
+  exibirImagem = false;
+  private _filtroLista : string = '';
+
+  public get filtraLista() : string {
+    return this._filtroLista;
+  }
+
+  public set filtraLista(filtroLista: string){
+    this._filtroLista = filtroLista;
+    this.eventosFiltrados = this.filtraLista ? this.filtrarEventos(this.filtraLista) :  this.eventos;
+  }
+
+  filtrarEventos(filtraPor: string ) : any {
+    filtraPor = filtraPor.toLowerCase();
+    return this.eventos.filter(
+      (evento: any) => evento.tema.toLocaleLowerCase().indexOf(filtraPor) !== -1
+    )
+
+  }
 
   public getEventos(): void  {
 
     this.http.get('https://localhost:5001/Eventos').subscribe(
-      response => this.eventos = response,
+      response => {
+        this.eventos = response;
+        this.eventosFiltrados = this.eventos;
+      }
     );
 
     this.http.get('https://localhost:5001/Eventos').subscribe(
       error => console.log(error)
     );
-
-    this.eventos = [
-      {
-        Tema: "Angular 11",
-        Local: "São Paulo"
-      },
-      {
-        Tema: ".NET 5",
-        Local: "Campinas"
-      },
-      {
-        Tema: "Angular e suas novidades",
-        Local: "Diadema"
-      }
-    ]
-
   }
+
+  alterarImagem()
+  {
+    this.exibirImagem = !this.exibirImagem;
+  };
+
 }
